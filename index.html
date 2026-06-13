@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capital Pro - Portal</title>
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--page-bg:rgb(255,255,255);--input-bg:rgb(255,255,255);--text-main:rgb(26,26,26);--band-color:rgb(230,237,249);--label:rgb(154,163,178);--placeholder:rgb(184,192,207);--primary:rgb(21,101,255);--primary-dark:rgb(10,79,217);--primary-light:rgb(59,130,255)}html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--page-bg);color:var(--text-main);position:relative;overflow-x:hidden}body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient( 135deg,transparent 0,transparent calc(5px + 55px),var(--band-color) calc(1px + 59px),var(--band-color) calc(2px + 108px) );mask-image:linear-gradient(to bottom,rgb(0,0,0) 0%,transparent 25%,transparent 75%,rgb(0,0,0) 100%);-webkit-mask-image:linear-gradient(to bottom,rgb(0,0,0) 0%,transparent 25%,transparent 75%,rgb(0,0,0) 100%);pointer-events:none;z-index:0}.page{width:100%;max-width:398px;margin:0 auto;min-height:100vh;padding:21px 18px 31px;position:relative;z-index:1}.logo-wrap{display:flex;justify-content:center;align-items:center;margin-top:13px;margin-bottom:23px}.logo-wrap img{max-width:145px;max-height:95px;object-fit:contain}.welcome-title{font-size:18px;font-weight:700;color:rgb(17,17,17);margin-bottom:14px;text-align:left}.field-group{margin-bottom:10px;position:relative}.field-label{display:block;font-size:11.5px;color:var(--label);margin-bottom:4px;font-weight:400}.field-box{display:flex;align-items:center;background:var(--input-bg);border:none;border-radius:4px;padding:0 9px;height:42px;gap:6px;box-shadow:0 3px 8px rgba(0,0,0,0.06),0 6px 15px rgba(0,0,0,0.05),inset 0 0 0 1px rgba(230,235,245,0.8);transition:box-shadow 0.2s}.field-box:focus-within{box-shadow:0 3px 9px rgba(70,130,255,0.12),0 7px 18px rgba(70,130,255,0.08),inset 0 0 0 1px rgba(70,130,255,0.32)}.phone-prefix{color:rgb(26,26,26);font-size:14px;font-weight:500;margin-right:7px;padding-right:9px;border-right:1px solid rgb(224,231,240)}.field-input{flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;color:var(--text-main);height:100%}.field-input::placeholder{color:var(--placeholder)}.options-row{display:flex;justify-content:space-between;align-items:center;margin-top:9px;margin-bottom:5px}.forgot-link{font-size:13px;color:var(--primary);text-decoration:none;font-weight:400}.signin-btn{width:100%;height:44px;margin-top:14px;border:none;border-radius:6px;background:linear-gradient(180deg,var(--primary-light) 0%,var(--primary-dark) 100%);color:rgb(255,255,255);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(21,101,255,0.24)}.register-btn{width:100%;height:45px;margin-top:9px;border:1.5px solid var(--primary);border-radius:5px;background:rgb(255,255,255);color:var(--primary);font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center}.form-section{display:none}.form-section.active{display:block}
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  </head>
+  <body>
+    <div class="page">
+      <div class="logo-wrap">
+        <img src="https://i.ibb.co/d0d9m3W6/IMG-20260504-WA0067-removebg-preview.png" alt="Logo" />
+      </div>
+
+      <div id="loginSection" class="form-section active">
+        <div class="welcome-title">Welcome back !</div>
+        <form id="loginForm" onsubmit="return false;">
+          <div class="field-group">
+            <label class="field-label">Phone Number</label>
+            <div class="field-box">
+              <span class="phone-prefix">+91</span>
+              <input type="text" id="loginPhone" class="field-input" placeholder="Enter phone number" maxlength="10" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Password</label>
+            <div class="field-box">
+              <input type="password" id="loginPassword" class="field-input" placeholder="Enter password" />
+            </div>
+          </div>
+          <div class="options-row">
+            <span style="font-size:13px; color:gray;">Remember Password</span>
+            <a href="#" class="forgot-link" onclick="switchForm('forgotSection')">Forgot Password?</a>
+          </div>
+          <button type="button" id="loginBtn" class="signin-btn">Sign In</button>
+          <button type="button" class="register-btn" onclick="switchForm('registerSection')">No account? Register</button>
+        </form>
+      </div>
+
+      <div id="registerSection" class="form-section">
+        <div class="welcome-title">Create Account</div>
+        <form id="registerForm" onsubmit="return false;">
+          <div class="field-group">
+            <label class="field-label">Phone Number</label>
+            <div class="field-box">
+              <span class="phone-prefix">+91</span>
+              <input type="text" id="regPhone" class="field-input" placeholder="Enter phone number" maxlength="10" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Create Password</label>
+            <div class="field-box">
+              <input type="password" id="regPassword" class="field-input" placeholder="Create password" />
+            </div>
+          </div>
+          <button type="button" id="regBtn" class="signin-btn">Register Now</button>
+          <button type="button" class="register-btn" onclick="switchForm('loginSection')">Already have an account? Sign In</button>
+        </form>
+      </div>
+
+      <div id="forgotSection" class="form-section">
+        <div class="welcome-title">Reset Password</div>
+        <form id="forgotForm" onsubmit="return false;">
+          <div class="field-group">
+            <label class="field-label">Registered Phone Number</label>
+            <div class="field-box">
+              <span class="phone-prefix">+91</span>
+              <input type="text" id="forgotPhone" class="field-input" placeholder="Enter phone number" maxlength="10" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">New Password</label>
+            <div class="field-box">
+              <input type="password" id="forgotNewPassword" class="field-input" placeholder="Enter new password" />
+            </div>
+          </div>
+          <button type="button" id="forgotBtn" class="signin-btn">Update Password</button>
+          <button type="button" class="register-btn" onclick="switchForm('loginSection')">Back to Sign In</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCAUQfcd1k63pp2DDyBHWZoD5M-dkid45M",
+        authDomain: "scarlet-private-limited.firebaseapp.com",
+        databaseURL: "https://scarlet-private-limited-default-rtdb.firebaseio.com/",
+        projectId: "scarlet-private-limited",
+        storageBucket: "scarlet-private-limited.firebasestorage.app",
+        messagingSenderId: "570744434725",
+        appId: "1:570744434725:web:14b0452a7810806a1ccfcc"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+
+      function switchForm(sectionId) {
+        $('.form-section').removeClass('active');
+        $('#' + sectionId).addClass('active');
+      }
+
+      // LOGIN LOGIC
+      $('#loginBtn').on('click', function () {
+        let phone = $('#loginPhone').val().trim();
+        let password = $('#loginPassword').val();
+        if (!phone || !password) { alert('Please fill all fields'); return; }
+
+        database.ref('users/' + phone).once('value').then((snapshot) => {
+          if (snapshot.exists()) {
+            let userData = snapshot.val();
+            if (userData.password === password) {
+              alert('Login Success! Redirecting...');
+              // Yeh URL ke andar automatic number jodkar bhejega
+              window.location.href = "home.html?user=" + phone;
+            } else { alert('Invalid password!'); }
+          } else { alert('User not found!'); }
+        }).catch(() => { alert('Database Connection Error!'); });
+      });
+
+      // REGISTER LOGIC
+      $('#regBtn').on('click', function () {
+        let phone = $('#regPhone').val().trim();
+        let password = $('#regPassword').val();
+        if (phone.length !== 10 || !password) { alert('Enter valid 10-digit phone & password'); return; }
+
+        database.ref('users/' + phone).once('value').then((snapshot) => {
+          if (snapshot.exists()) { alert('Number already registered!'); } 
+          else {
+            database.ref('users/' + phone).set({
+              password: password, phone: phone, balance: 0, recharge: 0, withdraw: 0
+            }).then(() => {
+              alert('Account Created! Please Sign In.');
+              switchForm('loginSection');
+            });
+          }
+        });
+      });
+
+      // FORGOT PASSWORD LOGIC
+      $('#forgotBtn').on('click', function () {
+        let phone = $('#forgotPhone').val().trim();
+        let newPassword = $('#forgotNewPassword').val();
+        if (phone.length !== 10 || !newPassword) { alert('Enter valid 10-digit phone & new password'); return; }
+
+        database.ref('users/' + phone).once('value').then((snapshot) => {
+          if (snapshot.exists()) {
+            database.ref('users/' + phone).update({ password: newPassword }).then(() => {
+              alert('Password updated successfully!');
+              switchForm('loginSection');
+            });
+          } else { alert('User number does not exist!'); }
+        });
+      });
+    </script>
+  </body>
+</html>
